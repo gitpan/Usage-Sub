@@ -1,6 +1,6 @@
 # Before `make install' is performed this script should be runnable with
 # `make test'. After `make install' it should work as `perl test.pl'
-# $Id: test.pl,v 1.2 2002/02/23 12:14:08 hasant Exp $
+# $Id: test.pl,v 1.3 2002/02/24 05:40:35 hasant Exp $
 
 #########################
 
@@ -78,7 +78,13 @@ use Usage::Sub;
 sub method { usage undef, '$obj' }
 
 package main;
+
 $usage_regex = qr/usage: \$obj->method\(\)/;
 eval {Sample::Module::OO->method()};
 ok($@, $usage_regex,                                        #10
 	"Calling Sample::Module::OO->method() expecting usage");
+
+# TODO
+#eval {usage()};
+#ok($@, qr/Usage::Sub::usage\(\) must be called/);           #11
+#ok(0);           #11

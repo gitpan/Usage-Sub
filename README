@@ -1,6 +1,6 @@
-Usage/Sub version 0.01
-$Revision: 1.2 $
-$Date: 2002/02/23 12:15:05 $
+Usage/Sub version 0.02
+$Revision: 1.3 $
+$Date: 2002/02/24 05:39:28 $
 ======================
 
 ****************************************************************************
@@ -12,6 +12,7 @@ WARNING: This module is considered in alpha stage. The name and the
 NAME
     Usage::Sub - Issueing subroutine/method usage
 
+
 SYNOPSIS
       use Usage::Sub;
 
@@ -19,6 +20,7 @@ SYNOPSIS
           @_ >= 2 or usage 'NAME, COLOR [, INTENTSITY]';
           # process goes on
       }
+
 
 DESCRIPTION
     Usage::Sub provides functions to issueing the usage of subroutines or
@@ -81,6 +83,24 @@ DESCRIPTION
     $^W.
 
 
+BUGS
+
+    It refuses to work if one of the usage functions is called not from
+    subroutines or methods, for example, the main space.
+
+        #!perl
+        usage();
+
+    This will result in error message such as,
+
+        Usage::Sub::usage() must be called from a method or subroutine
+
+    The bug comes if the usage() is called from the eval context. It
+    continues to work since the fourth element of what caller (with "1"
+    argument) returns contains something, as documented in perldoc -f
+    caller.
+
+
 INSTALLATION
 
 To install this module type the following:
@@ -104,5 +124,5 @@ COPYRIGHT
 
 AVAILABILITY
 
-    http://san.port5.com/perl/modules/Usage-Sub-0.01.tar.gz
+    http://san.port5.com/0/perl/modules/Usage-Sub-0.02.tar.gz
 

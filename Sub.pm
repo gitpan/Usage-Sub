@@ -5,8 +5,8 @@ package Usage::Sub;
 # This program is free software. You may freely use it, modify
 # and/or distribute it under the same term as Perl itself.
 #
-# $Revision: 1.2 $
-# $Date: 2002/02/23 12:19:42 $
+# $Revision: 1.3 $
+# $Date: 2002/02/24 05:35:34 $
 
 =head1 NAME
 
@@ -43,20 +43,20 @@ our @ISA         = qw(Exporter);
 our %EXPORT_TAGS = ('all' => [qw(usage warn_hard warn_soft)]);
 our @EXPORT_OK   = (@{$EXPORT_TAGS{'all'}}, 'parse_fqpn');
 our @EXPORT      = qw(usage);
-our $VERSION     = '0.01';
+our $VERSION     = '0.02';
 
 sub _usage {
 	my($caller, $arg, $prefix) = @_;
-	my $sub = parse_fqpn($caller);
-	unless ($sub) {
-		$sub = parse_fqpn((caller 1)[3]);
+	unless ($caller) {
+		$caller = parse_fqpn((caller 1)[3]);
 		confess __PACKAGE__,
-		        "::$sub() must be called from a method or subroutine";
+		        "::$caller() must be called from a method or subroutine";
 	}
 
-	$arg = '' unless defined $arg;
-	my $usage = "$sub($arg)";
+	my $usage = parse_fqpn($caller);
 	$usage = "$prefix\->$usage" if defined $prefix;
+	$arg = '' unless defined $arg;
+	$usage .= "($arg)";
 	return "usage: $usage";
 }
 
@@ -182,6 +182,22 @@ sub parse_fqpn {
 	my @packs = split /::/, $1;
 	return(@packs, $2);
 }
+
+=head1 BUGS
+
+It refuses to work if one of the usage functions is called not from subroutines
+or methods, for example, the main space.
+
+  #!perl
+  usage();
+
+This will result in error message such as,
+
+  Usage::Sub::usage() must be called from a method or subroutine
+
+The bug comes if the usage() is called from the eval context. It continues
+to work since the fourth element of what caller (with "1" argument) returns
+contains something, as documented in perldoc -f caller.
 
 =head1 AUTHOR
 
