@@ -1,0 +1,108 @@
+Usage/Sub version 0.01
+$Revision: 1.2 $
+$Date: 2002/02/23 12:15:05 $
+======================
+
+****************************************************************************
+WARNING: This module is considered in alpha stage. The name and the
+         interface are subject to change.
+****************************************************************************
+
+
+NAME
+    Usage::Sub - Issueing subroutine/method usage
+
+SYNOPSIS
+      use Usage::Sub;
+
+      sub turn_on {
+          @_ >= 2 or usage 'NAME, COLOR [, INTENTSITY]';
+          # process goes on
+      }
+
+DESCRIPTION
+    Usage::Sub provides functions to issueing the usage of subroutines or
+    methods from inside the stub. Some people like to check the parameters
+    of the routine. For example,
+
+      # turn_on(NAME, COLOR [, INTENSITY])
+      sub turn_on {
+          @_ >= 2 or die "usage: turn_on(NAME, COLOR [, INTENSITY])\n";
+          # the process goes on
+      }
+
+    With usage() function (exported by default), you can achieve the same
+    result (and more) without having to remember the subroutine name.
+
+      use Usage::Sub;
+
+      sub turn_on {
+          @_ >= 2 or usage 'NAME, COLOR [, INTENTSITY]';
+          # process goes on
+      }
+
+    The usage() function makes use of the caller() built-in function to
+    determine the subroutine name. When turn_on() is called with
+    inappropriate parameters, usage() will terminate the program with
+    backtrace information and prints error message like,
+
+          usage: turn_on(NAME, COLOR [, INTENTSITY])
+
+    If turn_on() is a method, a prefix can be added to indicate it as object
+    method or class method call.
+
+      sub turn_on {
+          @_ >= 3 or usage 'NAME, COLOR [, INTENTSITY]', '$light';
+          # process goes on
+      }
+
+    The error message will be then,
+
+          usage: $light->turn_on(NAME, COLOR [, INTENTSITY])
+
+    or
+
+          usage: Light::My::Fire->turn_on(NAME, COLOR [, INTENTSITY])
+
+    should it be a class method call.
+
+    The warn_hard() and warn_soft() functions are similiar to usage(), but
+    they don't die. Instead, as the their names suggest, they only warn the
+    message out and returning undef. This can be handy for the subroutine to
+    print the error message and return immediately in one step.
+
+      sub turn_off {
+          @_ >= 2 or return warn_hard('NAME', '$light');
+          # process goes on
+      }
+
+    The difference between the two is that warn_soft() only works when $^W
+    holds true, while warn_hard() always works regardless of the value of
+    $^W.
+
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+
+AUTHOR
+    Hasanuddin Tamir <hasant@trabas.com>
+
+
+COPYRIGHT
+    Copyright (C) 2002 Trabas. All rights reserved.
+
+    This program is free software. You may freely use it, modify and/or
+    distribute it under the same term as Perl itself.
+
+
+AVAILABILITY
+
+    http://san.port5.com/perl/modules/Usage-Sub-0.01.tar.gz
+
